@@ -1,0 +1,17 @@
+[Unit]
+Description=Metrics Server to read metrics_from_special_app.txt
+After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=10
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/metrics-server
+KillSignal=SIGINT
+Restart=always
+RestartSec=1
+Environment=ENV=demo
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=network.target
