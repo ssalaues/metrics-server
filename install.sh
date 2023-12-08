@@ -8,6 +8,7 @@ cp metrics-server ${LOCATION}
 cp startup.sh ${LOCATION}
 cp generate-data.sh ${LOCATION}
 mkdir -p /data
+touch /data/metrics_from_special_app.txt
 
 cp systemd-config/metrics.service /etc/systemd/system
 # refresh config changes from filesystem
@@ -17,4 +18,4 @@ systemctl enable metrics.service
 # start server
 systemctl start metrics.service
 # get operational status
-systemctl status
+systemctl status metrics.service

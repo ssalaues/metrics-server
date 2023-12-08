@@ -6,7 +6,7 @@ StartLimitIntervalSec=10
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/metrics-server
+ExecStart=/usr/local/bin/startup.sh
 KillSignal=SIGINT
 Restart=always
 RestartSec=1
