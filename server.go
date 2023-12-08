@@ -14,6 +14,7 @@ const specialFile string = "/data/metrics_from_special_app.txt" // TODO also mak
 
 type MetricsCache struct {
 	Metrics	string
+	Location string
 }
 
 func ReadMetricsFromFile(file string) string {
@@ -32,7 +33,7 @@ func (m *MetricsCache) UpdateMetricsCache(i time.Duration) chan string {
 		for {
 			select {
 				case <- ticker.C:
-					m.Metrics = ReadMetricsFromFile(specialFile)
+					m.Metrics = ReadMetricsFromFile(m.Location)
 				case <- quit:
 					ticker.Stop()
 					return
@@ -55,7 +56,13 @@ func main() {
 	log.Println("Metrics server starting up")
 
 	// add new routes here
-	metrics := &MetricsCache{""}
+	var file string
+	if len(os.Args) < 2 {
+		file = specialFile
+	} else {
+		file = os.Args[1]
+	}
+	metrics := &MetricsCache{"", file}
 	quit := metrics.UpdateMetricsCache(interval)
 	http.HandleFunc("/metrics", metrics.MetricsRoute)
 

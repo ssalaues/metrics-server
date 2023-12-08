@@ -15,7 +15,7 @@ const metricsRoute string = "/metrics"
 func TestMetricsRouteFailure(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, metricsRoute, nil)
 	w := httptest.NewRecorder()
-	m := &MetricsCache{""}
+	m := &MetricsCache{"", "doesn't exist"}
 	m.MetricsRoute(w, req)
 	res := w.Result()
 	defer res.Body.Close()
@@ -31,7 +31,7 @@ func TestMetricsRouteFailure(t *testing.T) {
 func TestMetricsRouteSuccess(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, metricsRoute, nil)
 	w := httptest.NewRecorder()
-	m := &MetricsCache{"testMetric"}
+	m := &MetricsCache{"testMetric", "metrics_from_special_app.txt"}
 	m.MetricsRoute(w, req)
 	res := w.Result()
 	defer res.Body.Close()
@@ -47,10 +47,10 @@ func TestMetricsRouteSuccess(t *testing.T) {
 func TestCacheUpdate(t *testing.T) {
 	var i time.Duration = 1
 	var newMetric string = "UpdatedFile"
-	m := &MetricsCache{""}
+	m := &MetricsCache{"", "metrics_from_special_app.txt"}
 	m.UpdateMetricsCache(i)
-	os.WriteFile("data/metrics_from_special_app.txt", []byte(newMetric), 0644)
-	time.Sleep(i * time.Second)
+	os.WriteFile(m.Location, []byte(newMetric), 0644)
+	time.Sleep(1025 * time.Millisecond)
 	if m.Metrics != newMetric {
 		t.Errorf("expected %s but got '%s'", newMetric, m.Metrics)
 	}
