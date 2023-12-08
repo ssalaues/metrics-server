@@ -4,7 +4,7 @@ set -ex
 LOCATION=${1:-/usr/local/bin}
 
 # if it's already installed kill the sub process so the systemd service stops quicker/reliably
-kill $(ps aux | grep generate-data.sh | awk '{ print $2 }') || true
+kill $(ps aux | grep -m1 generate-data.sh | awk '{ print $2 }') || true
 systemctl stop metrics.service || true
 
 go build
