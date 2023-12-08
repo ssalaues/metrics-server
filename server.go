@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const port string = "1234" // TODO get from env, default to 1234
+const port string = "12345" // TODO get from env, default to 1234
 const interval time.Duration = 1 // TODO make this configurable from env
 const specialFile string = "/data/metrics_from_special_app.txt" // TODO also make this configurable
 
