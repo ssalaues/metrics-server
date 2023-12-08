@@ -18,12 +18,14 @@ sudo ./install.sh
 
 There is a `generate-data.sh` script that will write to a file specfied or by default write to `/data/metrics_from_special_app.txt` once every second with randomly generated data. Run this in a separate terminal if you want to test the webserver polling for updates.
 
+To specify a custom file pass in the file you want to use as an argument.
+
 ```
-go run server.go
+go run server.go ./test_file.txt
 ```
 
 ```
-./generate-data.sh
+./generate-data.sh ./test_file.txt
 ```
 
 ## Testing
