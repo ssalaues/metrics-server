@@ -3,6 +3,8 @@ set -ex
 
 LOCATION=${1:-/usr/local/bin}
 
+systemctl stop metrics.service || true
+
 go build
 cp metrics-server ${LOCATION}
 cp startup.sh ${LOCATION}
