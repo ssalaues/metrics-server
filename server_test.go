@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -19,8 +20,7 @@ func TestMetricsRouteFailure(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected error to be nil got %s", err)
 	}
-	if d := string(data); d != "Method Not Allowed" {
+	if d := strings.TrimSuffix(string(data), "\n"); d != "Method Not Allowed" {
 		t.Errorf("expected 405 got '%s'", d)
 	}
-
 }
