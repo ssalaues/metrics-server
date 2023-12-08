@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"os"
 	"testing"
+	"time"
 )
 
 const metricsRoute string = "/metrics"
@@ -39,5 +41,17 @@ func TestMetricsRouteSuccess(t *testing.T) {
 	}
 	if d := strings.TrimSuffix(string(data), "\n"); d != m.Metrics {
 		t.Errorf("expected 200 got '%s'", d)
+	}
+}
+
+func TestCacheUpdate(t *testing.T) {
+	var i time.Duration = 1
+	var newMetric string = "UpdatedFile"
+	m := &MetricsCache{""}
+	m.UpdateMetricsCache(i)
+	os.WriteFile("data/metrics_from_special_app.txt", []byte(newMetric), 0644)
+	time.Sleep(i * time.Second)
+	if m.Metrics != newMetric {
+		t.Errorf("expected %s but got '%s'", newMetric, m.Metrics)
 	}
 }

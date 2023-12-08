@@ -10,6 +10,7 @@ import (
 
 const port string = "1234" // TODO get from env, default to 1234
 const interval time.Duration = 1 // TODO make this configurable from env
+const specialFile string = "data/metrics_from_special_app.txt" // TODO also make this configurable
 type MetricsCache struct {
 	Metrics	string
 }
@@ -23,14 +24,14 @@ func ReadMetricsFromFile(file string) string {
 	return string(data)
 }
 
-func (m *MetricsCache) UpdateMetricsCache() chan string {
-	ticker := time.NewTicker(interval * time.Second)
+func (m *MetricsCache) UpdateMetricsCache(i time.Duration) chan string {
+	ticker := time.NewTicker(i * time.Second)
 	quit := make(chan string)
 	go func() {
 		for {
 			select {
 				case <- ticker.C:
-					m.Metrics = ReadMetricsFromFile("metrics_from_special_app.txt")
+					m.Metrics = ReadMetricsFromFile(specialFile)
 				case <- quit:
 					ticker.Stop()
 					return
@@ -54,11 +55,13 @@ func main() {
 
 	// add new routes here
 	metrics := &MetricsCache{""}
-	metrics.UpdateMetricsCache()
+	quit := metrics.UpdateMetricsCache(interval)
 	http.HandleFunc("/metrics", metrics.MetricsRoute)
 
-
 	log.Println("Metrics server started on port", port)
-
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
+	if err != nil {
+		quit <- "Ok"
+		log.Fatal(err)
+	}
 }
